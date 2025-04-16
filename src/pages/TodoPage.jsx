@@ -146,7 +146,7 @@ export default function TodoPage() {
       <Paper sx={{ p: 3, mb: 3 }}>
         <Box display="flex" gap={2} alignItems="center">
           <TextField
-            label="Describe your tasks (e.g. book tickets, write report)"
+            label="Describe your tasks (e.g. Book a Hindi movie Pathaan tickets on weekend)"
             fullWidth
             value={aiInput}
             onChange={(e) => setAiInput(e.target.value)}

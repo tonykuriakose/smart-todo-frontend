@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseURL = 'http://localhost:3001/api';
+const baseURL = import.meta.env.VITE_API_BASE_URL
 
-export const signup = (data) => axios.post(`${baseURL}/auth/signup`, data);
-export const login = (data) => axios.post(`${baseURL}/auth/login`, data);
+export const signup = (data) => axios.post(`${baseURL}/api/auth/signup`, data);
+export const login = (data) => axios.post(`${baseURL}/api/auth/login`, data);

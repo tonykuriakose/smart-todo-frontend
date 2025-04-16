@@ -1,16 +1,5 @@
 import { useState } from 'react';
-import {
-  Container,
-  Typography,
-  Box,
-  TextField,
-  Button,
-  List,
-  ListItem,
-  ListItemText,
-  Divider,
-  Paper
-} from '@mui/material';
+import {Container,Typography,Box,TextField,Button,List,ListItem,ListItemText,Divider,Paper} from '@mui/material';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getTodos, createTodo } from '../api/todos';
 
@@ -18,13 +7,13 @@ export default function TodoPage() {
   const [title, setTitle] = useState('');
   const queryClient = useQueryClient();
 
-  // ✅ Fetch all todos
+  
   const { data: todos, isLoading } = useQuery({
     queryKey: ['todos'],
     queryFn: getTodos
   });
 
-  // ✅ Mutation for creating a new todo
+  
   const createTodoMutation = useMutation({
     mutationFn: createTodo,
     onSuccess: () => {

@@ -66,7 +66,7 @@ export default function Login() {
           <Button
             fullWidth
             sx={{ mt: 1 }}
-            onClick={() => navigate('/signup')}
+            onClick={() => navigate('/')}
           >
             Don't have an account? Sign Up
           </Button>

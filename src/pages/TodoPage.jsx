@@ -19,6 +19,8 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { motion } from 'framer-motion';
+import toast from 'react-hot-toast';
+
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getTodos, createTodo, updateTodo, deleteTodo } from '../api/todos';
 import { suggestTasks } from '../api/ai';
@@ -44,10 +46,18 @@ export default function TodoPage() {
     queryFn: getTodos
   });
 
+
   const createTodoMutation = useMutation({
     mutationFn: createTodo,
-    onSuccess: () => queryClient.invalidateQueries(['todos'])
+    onSuccess: () => {
+      queryClient.invalidateQueries(['todos']);
+      toast.success('✅ New todo added!');
+    },
+    onError: () => {
+      toast.error('❌ Failed to add todo');
+    }
   });
+  
 
   const updateTodoMutation = useMutation({
     mutationFn: ({ id, data }) => updateTodo(id, data),
@@ -56,8 +66,15 @@ export default function TodoPage() {
 
   const deleteTodoMutation = useMutation({
     mutationFn: deleteTodo,
-    onSuccess: () => queryClient.invalidateQueries(['todos'])
+    onSuccess: () => {
+      queryClient.invalidateQueries(['todos']);
+      toast.success('🗑 Todo deleted');
+    },
+    onError: () => {
+      toast.error('❌ Failed to delete');
+    }
   });
+  
 
   const handleAdd = () => {
     if (title.trim()) {

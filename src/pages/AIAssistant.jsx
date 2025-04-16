@@ -20,7 +20,7 @@ export default function AIAssistant() {
       setResponse(res.data.suggestions);
     },
     onError: (err) => {
-      setResponse('⚠️ Failed to get suggestions: ' + (err.response?.data?.error || 'Unknown error'));
+      setResponse('Failed to get suggestions: ' + (err.response?.data?.error || 'Unknown error'));
     }
   });
 

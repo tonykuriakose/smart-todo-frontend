@@ -24,7 +24,8 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', formData);
+      const baseURL = import.meta.env.VITE_API_BASE_URL;
+      const res = await axios.post(`${baseURL}/auth/login`, formData);
       localStorage.setItem('token', res.data.token);
       navigate('/todos');
     } catch (err) {
@@ -74,3 +75,4 @@ export default function Login() {
     </Container>
   );
 }
+

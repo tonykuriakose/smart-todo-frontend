@@ -25,7 +25,7 @@ export default function Login() {
     e.preventDefault();
     try {
       const baseURL = import.meta.env.VITE_API_BASE_URL;
-      const res = await axios.post(`${baseURL}/auth/login`, formData);
+      const res = await axios.post(`${baseURL}/api/auth/login`, formData);
       localStorage.setItem('token', res.data.token);
       navigate('/todos');
     } catch (err) {

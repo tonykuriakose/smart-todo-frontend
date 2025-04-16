@@ -5,6 +5,7 @@ import TodoPage from './pages/TodoPage';
 import AIAssistant from './pages/AIAssistant';
 import WeeklySummary from './pages/WeeklySummary';
 import NotFound from './pages/NotFound';
+import Layout from './components/Layout';
 
 function App() {
   return (
@@ -12,9 +13,31 @@ function App() {
       <Routes>
         <Route path="/" element={<Signup />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/todos" element={<TodoPage />} />
-        <Route path="/ai" element={<AIAssistant />} />
-        <Route path="/summary" element={<WeeklySummary />} />
+
+        <Route
+          path="/todos"
+          element={
+            <Layout>
+              <TodoPage />
+            </Layout>
+          }
+        />
+        <Route
+          path="/ai"
+          element={
+            <Layout>
+              <AIAssistant />
+            </Layout>
+          }
+        />
+        <Route
+          path="/summary"
+          element={
+            <Layout>
+              <WeeklySummary />
+            </Layout>
+          }
+        />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

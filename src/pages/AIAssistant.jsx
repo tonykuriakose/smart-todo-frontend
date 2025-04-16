@@ -4,36 +4,62 @@ import {
   Typography,
   TextField,
   Button,
-  Box,
   Paper,
+  List,
+  ListItem,
+  ListItemText
 } from '@mui/material';
-import { useMutation } from '@tanstack/react-query';
 import { suggestTasks } from '../api/ai';
+import { createTodo } from '../api/todos';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import IconButton from '@mui/material/IconButton';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+
 
 export default function AIAssistant() {
-  const [input, setInput] = useState('');
-  const [response, setResponse] = useState('');
+  const queryClient = useQueryClient();
 
-  const mutation = useMutation({
-    mutationFn: suggestTasks,
-    onSuccess: (res) => {
-      setResponse(res.data.suggestions);
-    },
-    onError: (err) => {
-      setResponse('Failed to get suggestions: ' + (err.response?.data?.error || 'Unknown error'));
-    }
+const addTodoMutation = useMutation({
+  mutationFn: createTodo,
+  onSuccess: () => queryClient.invalidateQueries(['todos'])
+});
+
+const handleAddOne = (task) => {
+  addTodoMutation.mutate({
+    title: task,
+    status: 'To Do',
+    priority: 'Medium',
   });
+};
 
-  const handleSubmit = () => {
-    if (input.trim()) {
-      mutation.mutate(input);
+  const [input, setInput] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const handleAI = async () => {
+    setLoading(true);
+    try {
+      const res = await suggestTasks(input);
+      const raw = res.data.suggestions;
+
+      // Convert multiline response into task array
+      const tasks = raw
+        .split('\n')
+        .map((line) => line.replace(/^[-*]\s*/, '').trim())
+        .filter(Boolean);
+
+      setSuggestions(tasks);
+    } catch (err) {
+      setSuggestions(['⚠️ Failed to get suggestions.']);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <Container sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>
-        🧠 AI Task Assistant
+        🧠 AI Assistant
       </Typography>
 
       <Paper sx={{ p: 3, mb: 3 }}>
@@ -48,17 +74,31 @@ export default function AIAssistant() {
         <Button
           variant="contained"
           sx={{ mt: 2 }}
-          onClick={handleSubmit}
-          disabled={mutation.isLoading}
+          onClick={handleAI}
+          disabled={loading}
         >
-          {mutation.isLoading ? 'Thinking...' : 'Suggest Tasks'}
+          {loading ? 'Thinking...' : 'Suggest Tasks'}
         </Button>
       </Paper>
 
-      {response && (
+      {suggestions.length > 0 && (
         <Paper sx={{ p: 3 }}>
           <Typography variant="h6">AI Suggestions:</Typography>
-          <pre style={{ whiteSpace: 'pre-wrap', marginTop: '10px' }}>{response}</pre>
+          <List>
+  {suggestions.map((task, index) => (
+    <ListItem
+      key={index}
+      secondaryAction={
+        <IconButton onClick={() => handleAddOne(task)} edge="end" color="primary">
+          <AddCircleIcon />
+        </IconButton>
+      }
+    >
+      <ListItemText primary={task} />
+    </ListItem>
+  ))}
+</List>
+
         </Paper>
       )}
     </Container>

@@ -1,4 +1,6 @@
-import axios from './axiosInstance';
+import axios from 'axios';
 
-export const signup = (data) => axios.post('/auth/signup', data);
-export const login = (data) => axios.post('/auth/login', data);
+const baseURL = 'http://localhost:3001/api';
+
+export const signup = (data) => axios.post(`${baseURL}/auth/signup`, data);
+export const login = (data) => axios.post(`${baseURL}/auth/login`, data);

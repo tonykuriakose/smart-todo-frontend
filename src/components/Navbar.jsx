@@ -16,8 +16,6 @@ export default function Navbar() {
           SmartToDo
         </Typography>
         <div>
-          <Button color="inherit" onClick={() => navigate('/todos')}>Todos</Button>
-          <Button color="inherit" onClick={() => navigate('/ai')}>AI Assistant</Button>
           <Button color="inherit" onClick={() => navigate('/summary')}>Weekly Summary</Button>
           <Button color="inherit" onClick={handleLogout}>Logout</Button>
         </div>

@@ -23,14 +23,6 @@ function App() {
           }
         />
         <Route
-          path="/ai"
-          element={
-            <Layout>
-              <AIAssistant />
-            </Layout>
-          }
-        />
-        <Route
           path="/summary"
           element={
             <Layout>

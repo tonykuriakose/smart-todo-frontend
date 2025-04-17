@@ -7,6 +7,8 @@ import { Toaster } from "react-hot-toast";
 
 const queryClient = new QueryClient();
 
+const GOOGLE_CLIENT_ID="711021198669-85uo6dnpb13ngj7htd977gg2k499odg4.apps.googleusercontent.com"
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
     <QueryClientProvider client={queryClient}>

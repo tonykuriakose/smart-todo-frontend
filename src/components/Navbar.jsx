@@ -13,7 +13,7 @@ export default function Navbar() {
     <AppBar
       position="static"
       sx={{
-        bgcolor: '#FFFA91', // light yellow background like sticky notes
+        bgcolor: '#FFFA91',
         boxShadow: '0px 4px 10px rgba(0,0,0,0.1)',
         transform: 'rotate(-0.3deg)',
       }}

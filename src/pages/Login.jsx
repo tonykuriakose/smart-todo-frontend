@@ -7,15 +7,16 @@ import {
   Box,
   Paper
 } from '@mui/material';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { login } from '../api/auth';
+import { motion } from 'framer-motion';
 
 export default function Login() {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value
     }));
@@ -24,8 +25,7 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const baseURL = import.meta.env.VITE_API_BASE_URL;
-      const res = await axios.post(`${baseURL}/api/auth/login`, formData);
+      const res = await login(formData);
       localStorage.setItem('token', res.data.token);
       navigate('/todos');
     } catch (err) {
@@ -34,45 +34,63 @@ export default function Login() {
   };
 
   return (
-    <Container maxWidth="xs">
-      <Paper elevation={3} sx={{ padding: 3, marginTop: 8 }}>
-        <Typography variant="h5" align="center">Login</Typography>
-        <Box component="form" onSubmit={handleSubmit} mt={2}>
-          <TextField
-            label="Email"
-            name="email"
-            fullWidth
-            margin="normal"
-            value={formData.email}
-            onChange={handleChange}
-          />
-          <TextField
-            label="Password"
-            name="password"
-            type="password"
-            fullWidth
-            margin="normal"
-            value={formData.password}
-            onChange={handleChange}
-          />
-          <Button
-            type="submit"
-            variant="contained"
-            fullWidth
-            sx={{ mt: 2 }}
-          >
-            Login
-          </Button>
-          <Button
-            fullWidth
-            sx={{ mt: 1 }}
-            onClick={() => navigate('/')}
-          >
-            Don't have an account? Sign Up
-          </Button>
-        </Box>
-      </Paper>
-    </Container>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #A7F3D0 0%, #C7D2FE 100%)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 2,
+      }}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <Paper
+          elevation={6}
+          sx={{
+            padding: 4,
+            maxWidth: 400,
+            bgcolor: '#C7D2FE',
+            borderRadius: 3,
+            transform: 'rotate(1deg)',
+            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)'
+          }}
+        >
+          <Typography variant="h4" align="center" gutterBottom fontWeight="bold">
+            🔐 Login
+          </Typography>
+          <Box component="form" onSubmit={handleSubmit} mt={3} display="flex" flexDirection="column" gap={2}>
+            <TextField
+              label="Email"
+              name="email"
+              type="email"
+              fullWidth
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+            <TextField
+              label="Password"
+              name="password"
+              type="password"
+              fullWidth
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+            <Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>
+              Login
+            </Button>
+            <Button fullWidth sx={{ mt: 1 }} onClick={() => navigate('/')}>
+              Don't have an account? Sign Up
+            </Button>
+          </Box>
+        </Paper>
+      </motion.div>
+    </Box>
   );
 }
-

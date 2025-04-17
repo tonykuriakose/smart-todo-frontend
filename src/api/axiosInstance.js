@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+const API_BASE_URL="https://smart-todo-backend-8hxj.onrender.com"
+
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL
 });

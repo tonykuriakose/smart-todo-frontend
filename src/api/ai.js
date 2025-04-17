@@ -5,6 +5,3 @@ export const suggestTasks = (input) =>
 
 export const weeklySummary = (completedTasks) =>
   axios.post('/api/ai/weekly-summary', { completedTasks });
-
-export const taskChat = (question, context) =>
-  axios.post('/api/ai/chat', { question, context });

@@ -11,26 +11,15 @@ function App() {
   return (
     <Router>
       <Routes>
+
         <Route path="/" element={<Signup />} />
         <Route path="/login" element={<Login />} />
 
-        <Route
-          path="/todos"
-          element={
-            <Layout>
-              <TodoPage />
-            </Layout>
-          }
-        />
-        <Route
-          path="/summary"
-          element={
-            <Layout>
-              <WeeklySummary />
-            </Layout>
-          }
-        />
+        <Route path="/todos"  element={<Layout><TodoPage /></Layout>}/>
+        <Route path="/summary" element={<Layout><WeeklySummary /></Layout>}/>
+        
         <Route path="*" element={<NotFound />} />
+        
       </Routes>
     </Router>
   );

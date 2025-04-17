@@ -1,12 +1,5 @@
 import { useState } from 'react';
-import {
-  Container,
-  TextField,
-  Button,
-  Typography,
-  Box,
-  Paper
-} from '@mui/material';
+import {Container,TextField,Button,Typography,Box,Paper} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { signup } from '../api/auth';
 import { motion } from 'framer-motion';

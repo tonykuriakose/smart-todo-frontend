@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 import {
   Container,
   Typography,
@@ -13,69 +13,92 @@ import {
   IconButton,
   Grid,
   Chip,
-} from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import RefreshIcon from '@mui/icons-material/Refresh';
-import { motion } from 'framer-motion';
-import toast from 'react-hot-toast';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getTodos, createTodo, updateTodo, deleteTodo } from '../api/todos';
-import { suggestTasks } from '../api/ai';
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import { motion } from "framer-motion";
+import toast from "react-hot-toast";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { getTodos, createTodo, updateTodo, deleteTodo } from "../api/todos";
+import { suggestTasks } from "../api/ai";
 
 const MotionBox = motion(Box);
-const stickyColors = ['#FFFA91', '#FFD59E', '#A7F3D0', '#C7D2FE', '#FDE68A', '#FBCFE8'];
+const stickyColors = [
+  "#FFFA91",
+  "#FFD59E",
+  "#A7F3D0",
+  "#C7D2FE",
+  "#FDE68A",
+  "#FBCFE8",
+];
 const getNoteColor = (index) => stickyColors[index % stickyColors.length];
 
 export default function TodoPage() {
-  const [title, setTitle] = useState('');
-  const [priority, setPriority] = useState('Medium');
-  const [status, setStatus] = useState('To Do');
-  const [dueDate, setDueDate] = useState('');
-  const [filterStatus, setFilterStatus] = useState('');
-  const [aiInput, setAiInput] = useState('');
+  const [title, setTitle] = useState("");
+  const [priority, setPriority] = useState("Medium");
+  const [status, setStatus] = useState("To Do");
+  const [dueDate, setDueDate] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
+  const [aiInput, setAiInput] = useState("");
   const [suggestions, setSuggestions] = useState([]);
-  const [priorityForAI, setPriorityForAI] = useState('Medium');
-  const [dueDateForAI, setDueDateForAI] = useState('');
+  const [priorityForAI, setPriorityForAI] = useState("Medium");
+  const [dueDateForAI, setDueDateForAI] = useState("");
   const [loadingAI, setLoadingAI] = useState(false);
 
   const queryClient = useQueryClient();
-  const { data: todos, isLoading } = useQuery({ queryKey: ['todos'], queryFn: getTodos });
+  const { data: todos, isLoading } = useQuery({
+    queryKey: ["todos"],
+    queryFn: getTodos,
+  });
 
   const createTodoMutation = useMutation({
     mutationFn: createTodo,
     onSuccess: () => {
-      queryClient.invalidateQueries(['todos']);
-      toast.success('✅ New todo added!');
+      queryClient.invalidateQueries(["todos"]);
+      toast.success("✅ New todo added!");
     },
-    onError: () => toast.error('❌ Failed to add todo')
+    onError: () => toast.error("❌ Failed to add todo"),
   });
 
   const updateTodoMutation = useMutation({
     mutationFn: ({ id, data }) => updateTodo(id, data),
-    onSuccess: () => queryClient.invalidateQueries(['todos'])
+    onSuccess: () => queryClient.invalidateQueries(["todos"]),
   });
 
   const deleteTodoMutation = useMutation({
     mutationFn: deleteTodo,
     onSuccess: () => {
-      queryClient.invalidateQueries(['todos']);
-      toast.success('🗑 Todo deleted');
+      queryClient.invalidateQueries(["todos"]);
+      toast.success("🗑 Todo deleted");
     },
-    onError: () => toast.error('❌ Failed to delete')
+    onError: () => toast.error("❌ Failed to delete"),
   });
 
   const handleAdd = () => {
     if (title.trim()) {
-      createTodoMutation.mutate({ title, status, priority, dueDate: dueDate || null });
-      setTitle(''); setPriority('Medium'); setStatus('To Do'); setDueDate('');
+      createTodoMutation.mutate({
+        title,
+        status,
+        priority,
+        dueDate: dueDate || null,
+      });
+      setTitle("");
+      setPriority("Medium");
+      setStatus("To Do");
+      setDueDate("");
     }
   };
 
   const handleDelete = (id) => deleteTodoMutation.mutate(id);
 
   const handleStatusToggle = (todo) => {
-    const next = todo.status === 'To Do' ? 'In Progress' : todo.status === 'In Progress' ? 'Done' : 'To Do';
+    const next =
+      todo.status === "To Do"
+        ? "In Progress"
+        : todo.status === "In Progress"
+        ? "Done"
+        : "To Do";
     updateTodoMutation.mutate({ id: todo.id, data: { status: next } });
   };
 
@@ -85,14 +108,14 @@ export default function TodoPage() {
     try {
       const res = await suggestTasks(aiInput);
       const parsed = res.data.suggestions
-        .split('\n')
-        .map((line) => line.replace(/^[-*]\s*/, '').trim())
+        .split("\n")
+        .map((line) => line.replace(/^[-*]\s*/, "").trim())
         .filter(Boolean)
         .slice(0, 2);
       setSuggestions(parsed);
-      setAiInput(''); // ✅ Clear input after refresh
+      setAiInput(""); // ✅ Clear input after refresh
     } catch {
-      setSuggestions(['⚠️ Failed to get suggestions.']);
+      setSuggestions(["⚠️ Failed to get suggestions."]);
     } finally {
       setLoadingAI(false);
     }
@@ -101,13 +124,13 @@ export default function TodoPage() {
   const handleAddSuggestion = (task) => {
     createTodoMutation.mutate({
       title: task,
-      status: 'To Do',
+      status: "To Do",
       priority: priorityForAI,
-      dueDate: dueDateForAI || null
+      dueDate: dueDateForAI || null,
     });
-    setAiInput('');
+    setAiInput("");
     setSuggestions([]);
-    setDueDateForAI('');
+    setDueDateForAI("");
   };
 
   const filteredTodos = filterStatus
@@ -116,28 +139,43 @@ export default function TodoPage() {
 
   return (
     <Container sx={{ mt: 4 }}>
-      <Typography variant="h4" gutterBottom align="center">SmartToDo</Typography>
+      <Typography variant="h4" gutterBottom align="center">
+        SmartToDo
+      </Typography>
 
       {/* 🧠 AI Input */}
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-        <Paper sx={{ p: 3, mb: 3, bgcolor: '#C7D2FE', borderRadius: 2 }}>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <Paper sx={{ p: 3, mb: 3, bgcolor: "#C7D2FE", borderRadius: 2 }}>
           <Box display="flex" gap={2} alignItems="center">
             <TextField
               label="Ask AI to create tasks..."
+              placeholder='e.g. "Book a movie Avatar on coming Sunday."'
               fullWidth
               value={aiInput}
               onChange={(e) => setAiInput(e.target.value)}
             />
+
             <Box display="flex" gap={1}>
-              <Button variant="contained" onClick={handleAI} disabled={loadingAI}>
-                {loadingAI ? 'Thinking...' : 'Suggest'}
+              <Button
+                variant="contained"
+                onClick={handleAI}
+                disabled={loadingAI}
+              >
+                {loadingAI ? "Thinking..." : "Suggest"}
               </Button>
               <IconButton
                 onClick={handleAI}
                 disabled={loadingAI}
                 color="primary"
                 title="Refresh Suggestions"
-                sx={{ border: '1px solid #ccc', borderRadius: 2, bgcolor: '#ffffff80' }}
+                sx={{
+                  border: "1px solid #ccc",
+                  borderRadius: 2,
+                  bgcolor: "#ffffff80",
+                }}
               >
                 <RefreshIcon />
               </IconButton>
@@ -170,9 +208,18 @@ export default function TodoPage() {
               <Grid container spacing={2}>
                 {suggestions.map((task, index) => (
                   <Grid item xs={12} sm={6} md={4} key={index}>
-                    <Paper sx={{ p: 2, bgcolor: getNoteColor(index), borderRadius: 2 }}>
+                    <Paper
+                      sx={{
+                        p: 2,
+                        bgcolor: getNoteColor(index),
+                        borderRadius: 2,
+                      }}
+                    >
                       <Typography>{task}</Typography>
-                      <IconButton onClick={() => handleAddSuggestion(task)} color="primary">
+                      <IconButton
+                        onClick={() => handleAddSuggestion(task)}
+                        color="primary"
+                      >
                         <AddCircleIcon />
                       </IconButton>
                     </Paper>
@@ -185,14 +232,30 @@ export default function TodoPage() {
       </motion.div>
 
       {/* ✍️ Manual Add */}
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-        <Paper elevation={4} sx={{ p: 3, mb: 3, bgcolor: '#FFFA91', borderRadius: 2 }}>
-          <Typography variant="h6" gutterBottom>📝 Add Todo Manually</Typography>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <Paper
+          elevation={4}
+          sx={{ p: 3, mb: 3, bgcolor: "#FFFA91", borderRadius: 2 }}
+        >
+          <Typography variant="h6" gutterBottom>
+            📝 Add Todo Manually
+          </Typography>
           <Box display="flex" gap={2} flexDirection="column">
-            <TextField label="Task Title" fullWidth value={title} onChange={(e) => setTitle(e.target.value)} />
+            <TextField
+              label="Task Title"
+              fullWidth
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
             <FormControl fullWidth>
               <InputLabel>Priority</InputLabel>
-              <Select value={priority} onChange={(e) => setPriority(e.target.value)}>
+              <Select
+                value={priority}
+                onChange={(e) => setPriority(e.target.value)}
+              >
                 <MenuItem value="Low">Low</MenuItem>
                 <MenuItem value="Medium">Medium</MenuItem>
                 <MenuItem value="High">High</MenuItem>
@@ -200,24 +263,40 @@ export default function TodoPage() {
             </FormControl>
             <FormControl fullWidth>
               <InputLabel>Status</InputLabel>
-              <Select value={status} onChange={(e) => setStatus(e.target.value)}>
+              <Select
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+              >
                 <MenuItem value="To Do">To Do</MenuItem>
                 <MenuItem value="In Progress">In Progress</MenuItem>
                 <MenuItem value="Done">Done</MenuItem>
               </Select>
             </FormControl>
-            <TextField type="date" label="Due Date" InputLabelProps={{ shrink: true }} value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
-            <Button variant="contained" onClick={handleAdd}>Add Todo</Button>
+            <TextField
+              type="date"
+              label="Due Date"
+              InputLabelProps={{ shrink: true }}
+              value={dueDate}
+              onChange={(e) => setDueDate(e.target.value)}
+            />
+            <Button variant="contained" onClick={handleAdd}>
+              Add Todo
+            </Button>
           </Box>
         </Paper>
       </motion.div>
 
       {/* 📌 Sticky Notes List */}
       <Paper sx={{ p: 3 }}>
-        <Typography variant="h6" gutterBottom>Your Sticky Todos</Typography>
+        <Typography variant="h6" gutterBottom>
+          Your Sticky Todos
+        </Typography>
         <FormControl fullWidth sx={{ mb: 2 }}>
           <InputLabel>Filter by Status</InputLabel>
-          <Select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
+          <Select
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+          >
             <MenuItem value="">All</MenuItem>
             <MenuItem value="To Do">To Do</MenuItem>
             <MenuItem value="In Progress">In Progress</MenuItem>
@@ -231,7 +310,11 @@ export default function TodoPage() {
           <Grid container spacing={3}>
             {filteredTodos?.map((todo, index) => (
               <Grid item xs={12} sm={6} md={4} key={todo.id}>
-                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }}>
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                >
                   <Paper
                     elevation={4}
                     sx={{
@@ -239,25 +322,45 @@ export default function TodoPage() {
                       minHeight: 180,
                       borderRadius: 2,
                       bgcolor: getNoteColor(index),
-                      transform: `rotate(${index % 2 === 0 ? '-1.5deg' : '1.5deg'})`,
-                      position: 'relative'
+                      transform: `rotate(${
+                        index % 2 === 0 ? "-1.5deg" : "1.5deg"
+                      })`,
+                      position: "relative",
                     }}
                   >
-                    <Typography variant="subtitle1" fontWeight="bold" gutterBottom>{todo.title}</Typography>
-                    <Typography variant="body2" sx={{ mb: 1 }}>📌 <strong>Priority:</strong> {todo.priority}</Typography>
-                    <Typography variant="body2">📅 <strong>Due:</strong> {todo.dueDate?.slice(0, 10) || '—'}</Typography>
+                    <Typography
+                      variant="subtitle1"
+                      fontWeight="bold"
+                      gutterBottom
+                    >
+                      {todo.title}
+                    </Typography>
+                    <Typography variant="body2" sx={{ mb: 1 }}>
+                      📌 <strong>Priority:</strong> {todo.priority}
+                    </Typography>
+                    <Typography variant="body2">
+                      📅 <strong>Due:</strong>{" "}
+                      {todo.dueDate?.slice(0, 10) || "—"}
+                    </Typography>
                     <Chip
                       label={todo.status}
                       size="small"
                       onClick={() => handleStatusToggle(todo)}
                       color={
-                        todo.status === 'Done' ? 'success'
-                        : todo.status === 'In Progress' ? 'warning'
-                        : 'default'
+                        todo.status === "Done"
+                          ? "success"
+                          : todo.status === "In Progress"
+                          ? "warning"
+                          : "default"
                       }
                       sx={{ mt: 1 }}
                     />
-                    <IconButton size="small" onClick={() => handleDelete(todo.id)} sx={{ position: 'absolute', top: 8, right: 8 }} color="error">
+                    <IconButton
+                      size="small"
+                      onClick={() => handleDelete(todo.id)}
+                      sx={{ position: "absolute", top: 8, right: 8 }}
+                      color="error"
+                    >
                       <DeleteIcon />
                     </IconButton>
                   </Paper>

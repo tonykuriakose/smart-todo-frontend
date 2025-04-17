@@ -79,6 +79,7 @@ export default function Signup() {
               label="Password"
               name="password"
               type="password"
+              placeholder="Minimum 6 characters"
               fullWidth
               value={formData.password}
               onChange={handleChange}

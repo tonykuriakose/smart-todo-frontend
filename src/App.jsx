@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
 import TodoPage from './pages/TodoPage';
-import AIAssistant from './pages/AIAssistant';
 import WeeklySummary from './pages/WeeklySummary';
 import NotFound from './pages/NotFound';
 import Layout from './components/Layout';
